@@ -11,45 +11,54 @@
   html, body { margin: 0; padding: 0; }
 
   .app-root {
-    --ink: #1B2A3A;
-    --ink-soft: #2E4256;
-    --parchment: #EDE6D6;
-    --paper: #FAF7F0;
-    --brass: #B8863B;
-    --brass-dark: #96692A;
-    --moss: #4A6558;
-    --rust: #A6432D;
-    --line: #D9CFB8;
+    --ink: #241B44;
+    --ink-soft: #5B4E8A;
+    --parchment: #F3EEFF;
+    --paper: #FFFFFF;
+    --brass: #FF6B4A;
+    --brass-dark: #E14F2E;
+    --moss: #14B8A6;
+    --rust: #EC4899;
+    --violet: #7C5CFF;
+    --gold: #FFB020;
+    --sky: #2FB4E5;
+    --line: #E4DDFB;
     min-height: 100vh;
     background: var(--parchment);
     color: var(--ink);
     font-family: 'Inter', sans-serif;
-    background-image: radial-gradient(circle at 1px 1px, rgba(27,42,58,0.06) 1px, transparent 0);
-    background-size: 22px 22px;
+    background-image:
+      radial-gradient(circle at 8% 12%, rgba(255,107,74,0.16) 0, transparent 42%),
+      radial-gradient(circle at 92% 8%, rgba(124,92,255,0.18) 0, transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(20,184,166,0.16) 0, transparent 45%),
+      radial-gradient(circle at 10% 88%, rgba(255,176,32,0.16) 0, transparent 42%),
+      radial-gradient(circle at 1px 1px, rgba(36,27,68,0.08) 1px, transparent 0);
+    background-size: auto, auto, auto, auto, 22px 22px;
   }
   .display { font-family: 'Fraunces', serif; }
   .mono { font-family: 'JetBrains Mono', monospace; }
 
-  .header { display: flex; align-items: center; justify-content: space-between; padding: 20px 32px; border-bottom: 2px solid var(--ink); background: var(--paper); }
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 20px 32px; background: var(--paper); border-bottom: 3px solid transparent; border-image: linear-gradient(90deg, var(--brass), var(--violet), var(--moss), var(--gold)) 1; box-shadow: 0 2px 10px rgba(124,92,255,0.08); }
   .brand { display: flex; align-items: center; gap: 10px; }
-  .brand-title { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .brand-title { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; background: linear-gradient(100deg, var(--brass), var(--violet) 60%, var(--moss)); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .brand-tag { font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 1px; }
-  .profile-pill { font-size: 12px; padding: 6px 12px; border-radius: 999px; background: var(--ink); color: var(--paper); font-family: 'JetBrains Mono', monospace; }
+  .profile-pill { font-size: 12px; padding: 6px 12px; border-radius: 999px; background: linear-gradient(100deg, var(--violet), var(--brass)); color: #fff; font-family: 'JetBrains Mono', monospace; }
 
   .container { max-width: 1040px; margin: 0 auto; padding: 28px 24px 64px; }
 
   .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 24px; flex-wrap: wrap; }
-  .search-box { flex: 1; min-width: 220px; display: flex; align-items: center; gap: 8px; background: var(--paper); border: 1.5px solid var(--line); border-radius: 8px; padding: 10px 14px; }
+  .search-box { flex: 1; min-width: 220px; display: flex; align-items: center; gap: 8px; background: var(--paper); border: 1.5px solid var(--line); border-radius: 10px; padding: 10px 14px; transition: border-color 0.12s ease; }
+  .search-box:focus-within { border-color: var(--violet); }
   .search-box input { border: none; outline: none; background: transparent; font-size: 14px; width: 100%; color: var(--ink); font-family: 'Inter', sans-serif; }
 
   .btn { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; border-radius: 7px; padding: 10px 16px; cursor: pointer; border: 1.5px solid transparent; display: inline-flex; align-items: center; gap: 7px; transition: transform 0.08s ease, box-shadow 0.15s ease; }
   .btn:active { transform: translateY(1px); }
-  .btn-primary { background: var(--brass); color: var(--paper); }
-  .btn-primary:hover { background: var(--brass-dark); }
-  .btn-outline { background: transparent; border-color: var(--ink); color: var(--ink); }
-  .btn-outline:hover { background: var(--ink); color: var(--paper); }
+  .btn-primary { background: linear-gradient(100deg, var(--brass), var(--rust)); color: #fff; box-shadow: 0 3px 10px rgba(255,107,74,0.35); }
+  .btn-primary:hover { background: linear-gradient(100deg, var(--brass-dark), var(--rust)); box-shadow: 0 4px 14px rgba(255,107,74,0.45); }
+  .btn-outline { background: transparent; border-color: var(--violet); color: var(--violet); }
+  .btn-outline:hover { background: var(--violet); color: #fff; }
   .btn-ghost { background: transparent; color: var(--ink-soft); border: none; padding: 6px 10px; }
-  .btn-ghost:hover { color: var(--ink); }
+  .btn-ghost:hover { color: var(--violet); }
   .btn-sm { padding: 7px 12px; font-size: 13px; }
   .btn:disabled { opacity: 0.45; cursor: not-allowed; }
   .icon { display: inline-flex; }
@@ -57,8 +66,8 @@
 
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
 
-  .index-card { background: var(--paper); border: 1.5px solid var(--ink); border-radius: 3px; position: relative; overflow: hidden; cursor: pointer; display: flex; flex-direction: column; box-shadow: 3px 3px 0 rgba(27,42,58,0.12); transition: transform 0.12s ease, box-shadow 0.12s ease; }
-  .index-card:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 rgba(27,42,58,0.16); }
+  .index-card { background: var(--paper); border: 1.5px solid var(--line); border-radius: 10px; position: relative; overflow: hidden; cursor: pointer; display: flex; flex-direction: column; box-shadow: 0 3px 12px rgba(124,92,255,0.10); transition: transform 0.12s ease, box-shadow 0.12s ease; }
+  .index-card:hover { transform: translate(-2px, -4px); box-shadow: 0 10px 22px rgba(124,92,255,0.20); }
   .index-tab { height: 8px; }
   .index-body { padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
   .index-subject { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
@@ -69,15 +78,15 @@
 
   .empty-state { text-align: center; padding: 60px 20px; color: var(--ink-soft); }
 
-  .modal-overlay { position: fixed; inset: 0; background: rgba(27,42,58,0.5); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
-  .modal { background: var(--paper); border-radius: 8px; max-width: 480px; width: 100%; max-height: 88vh; overflow-y: auto; border: 1.5px solid var(--ink); box-shadow: 6px 6px 0 rgba(27,42,58,0.18); }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(36,27,68,0.55); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
+  .modal { background: var(--paper); border-radius: 14px; max-width: 480px; width: 100%; max-height: 88vh; overflow-y: auto; border: 1.5px solid var(--line); box-shadow: 0 18px 40px rgba(124,92,255,0.28); }
   .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--line); }
   .modal-head h3 { font-family: 'Fraunces', serif; font-size: 20px; margin: 0; }
   .modal-body { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 14px; }
 
   label.field-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); display: block; margin-bottom: 6px; }
-  .input, .textarea { width: 100%; border: 1.5px solid var(--line); border-radius: 6px; padding: 10px 12px; font-family: 'Inter', sans-serif; font-size: 14px; color: var(--ink); background: #fff; outline: none; }
-  .input:focus, .textarea:focus { border-color: var(--brass); }
+  .input, .textarea { width: 100%; border: 1.5px solid var(--line); border-radius: 8px; padding: 10px 12px; font-family: 'Inter', sans-serif; font-size: 14px; color: var(--ink); background: #fff; outline: none; }
+  .input:focus, .textarea:focus { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(124,92,255,0.15); }
   .textarea { resize: vertical; min-height: 70px; }
   .radio-row { display: flex; gap: 14px; font-size: 13px; }
   .radio-row label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
@@ -90,24 +99,24 @@
   .classroom-meta { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-top: 8px; font-size: 13px; color: var(--ink-soft); }
   .classroom-desc { margin-top: 10px; font-size: 14.5px; color: var(--ink-soft); max-width: 640px; line-height: 1.55; }
 
-  .tabs { display: flex; gap: 4px; margin: 22px 0 0; border-bottom: 2px solid var(--ink); }
+  .tabs { display: flex; gap: 4px; margin: 22px 0 0; border-bottom: 2px solid var(--line); }
   .tab-btn { padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; position: relative; top: 2px; }
-  .tab-btn.active { color: var(--ink); border-bottom: 2px solid var(--brass); }
+  .tab-btn.active { color: var(--violet); border-bottom: 3px solid var(--brass); }
 
-  .ruled-paper { background: repeating-linear-gradient(var(--paper), var(--paper) 30px, var(--line) 31px); border: 1.5px solid var(--ink); border-left: none; border-radius: 0 4px 4px 0; padding: 24px 24px 24px 44px; margin-top: 18px; position: relative; }
-  .ruled-paper::before { content: ''; position: absolute; left: 26px; top: 0; bottom: 0; width: 1.5px; background: var(--rust); opacity: 0.55; }
+  .ruled-paper { background: repeating-linear-gradient(var(--paper), var(--paper) 30px, var(--line) 31px); border: 1.5px solid var(--line); border-left: none; border-radius: 0 10px 10px 0; padding: 24px 24px 24px 44px; margin-top: 18px; position: relative; }
+  .ruled-paper::before { content: ''; position: absolute; left: 26px; top: 0; bottom: 0; width: 2px; background: linear-gradient(var(--rust), var(--violet), var(--moss)); opacity: 0.7; }
 
   .post-form { display: flex; gap: 10px; margin-bottom: 20px; }
   .post-form textarea { flex: 1; min-height: 44px; }
 
-  .post { background: rgba(255,255,255,0.55); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; margin-bottom: 14px; }
-  .post-author { font-weight: 700; font-size: 13.5px; }
+  .post { background: rgba(255,255,255,0.75); border: 1px solid var(--line); border-left: 3px solid var(--sky); border-radius: 8px; padding: 14px 16px; margin-bottom: 14px; }
+  .post-author { font-weight: 700; font-size: 13.5px; color: var(--violet); }
   .post-time { font-size: 11.5px; color: var(--ink-soft); font-family: 'JetBrains Mono', monospace; margin-left: 8px; }
   .post-text { margin-top: 6px; font-size: 14.5px; line-height: 1.55; white-space: pre-wrap; }
   .post-actions { margin-top: 10px; display: flex; align-items: center; gap: 14px; }
   .reply-toggle { font-size: 12.5px; color: var(--moss); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
 
-  .replies { margin-top: 12px; padding-left: 18px; border-left: 2px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+  .replies { margin-top: 12px; padding-left: 18px; border-left: 2px solid var(--gold); display: flex; flex-direction: column; gap: 10px; }
   .reply { font-size: 13.5px; }
   .reply-author { font-weight: 700; }
   .reply-text { margin-top: 2px; line-height: 1.5; white-space: pre-wrap; }
@@ -115,22 +124,26 @@
   .reply-form input { flex: 1; }
 
   .resource-list { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
-  .resource-item { display: flex; align-items: center; gap: 12px; background: var(--paper); border: 1.5px solid var(--line); border-radius: 6px; padding: 14px 16px; cursor: pointer; }
-  .resource-item:hover { border-color: var(--brass); }
-  .resource-icon { width: 34px; height: 34px; border-radius: 6px; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .resource-item { display: flex; align-items: center; gap: 12px; background: var(--paper); border: 1.5px solid var(--line); border-radius: 8px; padding: 14px 16px; cursor: pointer; transition: border-color 0.12s ease, transform 0.12s ease; }
+  .resource-item:hover { border-color: var(--brass); transform: translateY(-1px); }
+  .resource-icon { width: 34px; height: 34px; border-radius: 8px; background: linear-gradient(135deg, var(--violet), var(--sky)); color: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .resource-title { font-weight: 600; font-size: 14.5px; }
   .resource-sub { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
 
-  .name-gate { position: fixed; inset: 0; background: var(--ink); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 60; }
-  .name-card { background: var(--paper); border-radius: 10px; padding: 36px 34px; max-width: 400px; width: 100%; text-align: center; box-shadow: 8px 8px 0 rgba(0,0,0,0.25); }
-  .name-card h2 { font-family: 'Fraunces', serif; font-size: 26px; margin: 14px 0 6px; }
-  .name-card p { color: var(--ink-soft); font-size: 14px; margin-bottom: 20px; }
+  .name-gate { position: fixed; inset: 0; background: linear-gradient(135deg, #241B44, #4A2E8A 45%, #B8395E); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 60; }
+  .name-card { background: var(--paper); border-radius: 16px; padding: 36px 34px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,0.35); }
+  .name-card h2 { font-family: 'Fraunces', serif; font-size: 26px; margin: 14px 0 6px; background: linear-gradient(100deg, var(--brass), var(--violet)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .name-card p { color: var(--ink-soft); font-size: 14px; margin-bottom: 4px; }
+  .auth-tabs { display: flex; gap: 6px; background: var(--parchment); border-radius: 999px; padding: 4px; margin: 18px 0 4px; }
+  .auth-tab { flex: 1; border: none; background: transparent; padding: 8px 0; border-radius: 999px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 13px; color: var(--ink-soft); cursor: pointer; }
+  .auth-tab.active { background: linear-gradient(100deg, var(--brass), var(--violet)); color: #fff; }
+  .auth-error { color: var(--rust); font-size: 12.5px; font-weight: 600; margin: 10px 0 0; text-align: left; }
 
-  .notice-bar { background: var(--rust); color: var(--paper); font-size: 13px; padding: 8px 16px; text-align: center; }
+  .notice-bar { background: linear-gradient(100deg, var(--rust), var(--violet)); color: #fff; font-size: 13px; padding: 8px 16px; text-align: center; }
 
   .reading-modal .modal { max-width: 620px; }
   .reading-text { white-space: pre-wrap; line-height: 1.75; font-size: 15px; color: var(--ink); }
-  .reading-link { word-break: break-all; color: var(--moss); font-weight: 600; }
+  .reading-link { word-break: break-all; color: var(--violet); font-weight: 600; }
 
   @media (max-width: 640px) {
     .header { padding: 16px 18px; }
@@ -140,11 +153,58 @@
 </style>
 </head>
 <body>
+<!--
+  FIREBASE SETUP — required before accounts will work:
+  1. Go to https://console.firebase.google.com and create a project (free).
+  2. In the project, open Build > Authentication > Get started, and enable the
+     "Email/Password" sign-in provider.
+  3. Open Build > Firestore Database > Create database (start in production mode).
+  4. Under Firestore "Rules", use something like this so only signed-in users
+     can read/write, and each user can only write their own profile:
+
+     rules_version = '2';
+     service cloud.firestore {
+       match /databases/{database}/documents {
+         match /users/{uid} {
+           allow read: if request.auth != null;
+           allow write: if request.auth != null && request.auth.uid == uid;
+         }
+         match /appdata/{doc} {
+           allow read, write: if request.auth != null;
+         }
+       }
+     }
+
+  5. In Project settings > General > Your apps, add a Web app and copy the
+     firebaseConfig object it gives you into FIREBASE_CONFIG below.
+-->
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 <div id="root"></div>
 
 <script>
+/* ---------- Firebase config — paste your project's config here ---------- */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAVrlXjYvOO2j7AF3RgmcPRZmeBjfxf0dA",
+  authDomain: "bookie-a63fd.firebaseapp.com",
+  projectId: "bookie-a63fd",
+  storageBucket: "bookie-a63fd.firebasestorage.app",
+  messagingSenderId: "303168850231",
+  appId: "1:303168850231:web:e3030b31034046e33fb2b2"
+};
+const firebaseReady = FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY";
+let auth = null, db = null;
+if (firebaseReady) {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  auth = firebase.auth();
+  db = firebase.firestore();
+  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function () {});
+}
+
 /* ---------- icons ---------- */
 const ICONS = {
+  logOut: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>',
   book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
   plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>',
   users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
@@ -166,24 +226,28 @@ function ic(name, size, color) {
   return '<span class="icon" style="width:' + size + 'px;height:' + size + 'px;color:' + (color || 'currentColor') + '">' + ICONS[name] + '</span>';
 }
 
-/* ---------- storage (works inside Claude artifacts via window.storage, falls back to localStorage when run as a plain file) ---------- */
-const hasCloudStorage = typeof window.storage !== 'undefined';
+/* ---------- storage (Firestore-backed: "shared" = one doc everyone can read/write, private = under the signed-in user) ---------- */
 async function sGet(key, shared) {
   try {
-    if (hasCloudStorage) {
-      const r = await window.storage.get(key, shared);
-      return r ? r.value : null;
+    if (!db) return null;
+    if (shared) {
+      const snap = await db.collection('appdata').doc(key).get();
+      return snap.exists ? snap.data().json : null;
     }
-    return localStorage.getItem((shared ? 'shared:' : 'p:') + key);
+    if (!S.user) return null;
+    const snap = await db.collection('users').doc(S.user.uid).collection('private').doc(key).get();
+    return snap.exists ? snap.data().json : null;
   } catch (e) { return null; }
 }
 async function sSet(key, shared, value) {
   try {
-    if (hasCloudStorage) {
-      const r = await window.storage.set(key, value, shared);
-      return !!r;
+    if (!db) return false;
+    if (shared) {
+      await db.collection('appdata').doc(key).set({ json: value, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      return true;
     }
-    localStorage.setItem((shared ? 'shared:' : 'p:') + key, value);
+    if (!S.user) return false;
+    await db.collection('users').doc(S.user.uid).collection('private').doc(key).set({ json: value });
     return true;
   } catch (e) { return false; }
 }
@@ -200,7 +264,7 @@ function timeAgo(ts) {
   if (s < 86400) return Math.floor(s / 3600) + 'h ago';
   return Math.floor(s / 86400) + 'd ago';
 }
-const TAB_COLORS = ['#B8863B', '#4A6558', '#A6432D', '#2E4256'];
+const TAB_COLORS = ['#FF6B4A', '#14B8A6', '#EC4899', '#7C5CFF', '#FFB020', '#2FB4E5'];
 function tabColor(s) {
   let h = 0;
   for (let i = 0; i < s.length; i++) h = s.charCodeAt(i) + ((h << 5) - h);
@@ -235,8 +299,9 @@ function seedCourses() {
 
 /* ---------- state ---------- */
 const S = {
-  profileName: '', nameInput: '', showNameGate: true,
-  courses: [], loaded: false,
+  user: null, profileName: '', showNameGate: true,
+  authMode: 'signin', authForm: { name: '', email: '', password: '' }, authError: '', authLoading: false,
+  courses: [], loaded: false, coursesLoaded: false,
   view: 'home', activeCourseId: null, activeTab: 'discussion',
   showCreate: false,
   createForm: { title: '', subject: '', description: '', resourceTitle: '', resourceType: 'text', resourceContent: '' },
@@ -246,10 +311,8 @@ const S = {
   resourceForm: { title: '', type: 'text', content: '' }, showAddResource: false
 };
 
-/* ---------- persistence actions ---------- */
-async function init() {
-  const name = await sGet('profile-name', false);
-  if (name) { S.profileName = name; S.showNameGate = false; }
+/* ---------- persistence + auth actions ---------- */
+async function loadCourses() {
   const coursesRaw = await sGet('courses-data', true);
   if (coursesRaw) {
     try { S.courses = JSON.parse(coursesRaw); } catch (e) { S.courses = seedCourses(); }
@@ -257,8 +320,31 @@ async function init() {
     S.courses = seedCourses();
     await sSet('courses-data', true, JSON.stringify(S.courses));
   }
-  S.loaded = true;
-  render();
+  S.coursesLoaded = true;
+}
+
+async function init() {
+  if (!firebaseReady) { S.loaded = true; render(); return; }
+  auth.onAuthStateChanged(async function (user) {
+    if (user) {
+      S.user = user;
+      let profile = null;
+      try {
+        const snap = await db.collection('users').doc(user.uid).get();
+        profile = snap.exists ? snap.data() : null;
+      } catch (e) {}
+      S.profileName = (profile && profile.name) || user.displayName || (user.email ? user.email.split('@')[0] : 'Member');
+      S.showNameGate = false;
+    } else {
+      S.user = null;
+      S.profileName = '';
+      S.showNameGate = true;
+    }
+    S.authLoading = false;
+    if (!S.coursesLoaded) await loadCourses();
+    S.loaded = true;
+    render();
+  });
 }
 
 async function persist() {
@@ -267,13 +353,60 @@ async function persist() {
   if (!ok) { S.notice = "Couldn't save that change — it may not stick around."; render(); }
 }
 
-async function saveName() {
-  const n = S.nameInput.trim();
-  if (!n) return;
-  S.profileName = n;
-  S.showNameGate = false;
+function switchAuthMode(mode) {
+  S.authMode = mode;
+  S.authError = '';
   render();
-  await sSet('profile-name', false, n);
+}
+
+function friendlyAuthError(e) {
+  const code = (e && e.code) || '';
+  if (code.indexOf('email-already-in-use') !== -1) return 'That email already has an account — try logging in instead.';
+  if (code.indexOf('user-not-found') !== -1 || code.indexOf('wrong-password') !== -1 || code.indexOf('invalid-credential') !== -1 || code.indexOf('invalid-login-credentials') !== -1) return 'Incorrect email or password.';
+  if (code.indexOf('invalid-email') !== -1) return 'That email address looks invalid.';
+  if (code.indexOf('weak-password') !== -1) return 'Password must be at least 6 characters.';
+  if (code.indexOf('too-many-requests') !== -1) return 'Too many attempts — please wait a moment and try again.';
+  return (e && e.message) || 'Something went wrong. Please try again.';
+}
+
+async function doSignUp() {
+  const f = S.authForm;
+  const name = f.name.trim(), email = f.email.trim(), pw = f.password;
+  if (!name || !email || !pw) { S.authError = 'Fill in your name, email, and password.'; render(); return; }
+  if (pw.length < 6) { S.authError = 'Password must be at least 6 characters.'; render(); return; }
+  S.authError = ''; S.authLoading = true; render();
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pw);
+    await cred.user.updateProfile({ displayName: name });
+    await db.collection('users').doc(cred.user.uid).set({
+      name: name, email: email, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    // onAuthStateChanged picks up the rest and re-renders
+  } catch (e) {
+    S.authError = friendlyAuthError(e);
+    S.authLoading = false;
+    render();
+  }
+}
+
+async function doSignIn() {
+  const f = S.authForm;
+  const email = f.email.trim(), pw = f.password;
+  if (!email || !pw) { S.authError = 'Enter your email and password.'; render(); return; }
+  S.authError = ''; S.authLoading = true; render();
+  try {
+    await auth.signInWithEmailAndPassword(email, pw);
+  } catch (e) {
+    S.authError = friendlyAuthError(e);
+    S.authLoading = false;
+    render();
+  }
+}
+
+async function doLogout() {
+  S.authForm = { name: '', email: '', password: '' };
+  S.authError = '';
+  await auth.signOut();
 }
 
 function openCourse(id) { S.activeCourseId = id; S.view = 'classroom'; S.activeTab = 'discussion'; S.showAddResource = false; render(); }
@@ -339,19 +472,39 @@ function addResource() {
 /* ---------- render helpers (each returns HTML string) ---------- */
 function renderNameGate() {
   if (!S.showNameGate) return '';
+  const f = S.authForm;
+  const isSignUp = S.authMode === 'signup';
+  const submitFn = isSignUp ? 'doSignUp' : 'doSignIn';
   return '<div class="name-gate"><div class="name-card">' +
     ic('cap', 36, 'var(--brass)') +
     '<h2>Welcome to The Commons</h2>' +
-    '<p>A shared classroom where anyone can start or join a course and learn together. What should we call you?</p>' +
-    '<input class="input" id="nameInput" placeholder="Your name" value="' + esc(S.nameInput) + '" oninput="S.nameInput=this.value" onkeydown="if(event.key===\'Enter\')saveName()" />' +
-    '<div style="margin-top:16px"><button class="btn btn-primary" style="width:100%;justify-content:center" onclick="saveName()" ' + (S.nameInput.trim() ? '' : 'disabled') + '>' + ic('logIn', 16) + ' Enter the Commons</button></div>' +
+    '<p>A shared classroom where anyone can start or join a course and learn together.</p>' +
+    '<div class="auth-tabs">' +
+      '<button type="button" class="auth-tab' + (!isSignUp ? ' active' : '') + '" onclick="switchAuthMode(\'signin\')">Log in</button>' +
+      '<button type="button" class="auth-tab' + (isSignUp ? ' active' : '') + '" onclick="switchAuthMode(\'signup\')">Sign up</button>' +
+    '</div>' +
+    (isSignUp ? '<input class="input" placeholder="Your name" value="' + esc(f.name) + '" oninput="S.authForm.name=this.value" style="margin-top:14px" />' : '<div style="margin-top:14px"></div>') +
+    '<input class="input" type="email" autocomplete="email" placeholder="Email" value="' + esc(f.email) + '" oninput="S.authForm.email=this.value" style="margin-top:10px" />' +
+    '<input class="input" type="password" autocomplete="' + (isSignUp ? 'new-password' : 'current-password') + '" placeholder="Password" value="' + esc(f.password) + '" oninput="S.authForm.password=this.value" onkeydown="if(event.key===\'Enter\')' + submitFn + '()" style="margin-top:10px" />' +
+    (S.authError ? '<p class="auth-error">' + esc(S.authError) + '</p>' : '') +
+    '<div style="margin-top:16px"><button class="btn btn-primary" style="width:100%;justify-content:center" onclick="' + submitFn + '()" ' + (S.authLoading ? 'disabled' : '') + '>' + ic('logIn', 16) + ' ' + (S.authLoading ? 'Please wait…' : (isSignUp ? 'Create account' : 'Log in')) + '</button></div>' +
+    '</div></div>';
+}
+
+function renderSetupNotice() {
+  return '<div class="name-gate"><div class="name-card" style="text-align:left;max-width:460px">' +
+    '<div style="text-align:center">' + ic('cap', 36, 'var(--brass)') + '</div>' +
+    '<h2 style="text-align:center">Firebase setup needed</h2>' +
+    '<p>Accounts and data are powered by Firebase, but this page doesn\'t have a project connected yet.</p>' +
+    '<p class="hint" style="font-style:normal;line-height:1.6">Open <span class="mono">index.html</span>, find <span class="mono">FIREBASE_CONFIG</span> near the top of the script, and paste in your Firebase project\'s web config (from the Firebase console → Project settings → Your apps). Setup steps are in an HTML comment right above the <span class="mono">&lt;div id="root"&gt;</span> tag.</p>' +
     '</div></div>';
 }
 
 function renderHeader() {
   return '<div class="header"><div class="brand">' + ic('book', 26, 'var(--brass)') +
     '<div><div class="brand-title display">The Commons</div><div class="brand-tag">learn it together</div></div></div>' +
-    (S.profileName ? '<div class="profile-pill">' + esc(S.profileName) + '</div>' : '') + '</div>';
+    (S.profileName ? '<div style="display:flex;align-items:center;gap:10px"><div class="profile-pill">' + esc(S.profileName) + '</div>' +
+      '<button class="btn btn-outline btn-sm" onclick="doLogout()">' + ic('logOut', 14) + ' Log out</button></div>' : '') + '</div>';
 }
 
 function courseCard(c) {
@@ -526,6 +679,7 @@ function syncCreateBtn() {
 /* ---------- root render with focus preservation ---------- */
 function render() {
   const root = document.getElementById('root');
+  if (!firebaseReady) { root.innerHTML = '<div class="app-root">' + renderSetupNotice() + '</div>'; return; }
   const active = document.activeElement;
   const activeId = active && active.id ? active.id : null;
   const selStart = active && 'selectionStart' in active ? active.selectionStart : null;
