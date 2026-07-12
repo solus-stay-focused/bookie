@@ -138,6 +138,10 @@
   .auth-tab { flex: 1; border: none; background: transparent; padding: 8px 0; border-radius: 999px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 13px; color: var(--ink-soft); cursor: pointer; }
   .auth-tab.active { background: linear-gradient(100deg, var(--brass), var(--violet)); color: #fff; }
   .auth-error { color: var(--rust); font-size: 12.5px; font-weight: 600; margin: 10px 0 0; text-align: left; }
+  .auth-divider { display: flex; align-items: center; gap: 10px; margin: 16px 0; color: var(--ink-soft); font-size: 12px; }
+  .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+  .btn-google { background: #fff; border: 1.5px solid var(--line); color: var(--ink); }
+  .btn-google:hover { border-color: var(--ink-soft); background: #fafafa; }
 
   .notice-bar { background: linear-gradient(100deg, var(--rust), var(--violet)); color: #fff; font-size: 13px; padding: 8px 16px; text-align: center; }
 
@@ -205,6 +209,7 @@ if (firebaseReady) {
 /* ---------- icons ---------- */
 const ICONS = {
   logOut: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>',
+  google: '<svg viewBox="0 0 20 20"><path fill="#4285F4" d="M19.6 10.23c0-.71-.06-1.4-.18-2.05H10v3.87h5.38a4.6 4.6 0 0 1-2 3.02v2.5h3.23c1.9-1.75 2.99-4.32 2.99-7.34z"/><path fill="#34A853" d="M10 20c2.7 0 4.96-.9 6.62-2.43l-3.23-2.5c-.9.6-2.04.96-3.39.96-2.6 0-4.8-1.76-5.59-4.12H1.06v2.59A10 10 0 0 0 10 20z"/><path fill="#FBBC05" d="M4.41 11.9A6 6 0 0 1 4.09 10c0-.66.11-1.3.32-1.9V5.51H1.06A10 10 0 0 0 0 10c0 1.61.39 3.14 1.06 4.49l3.35-2.59z"/><path fill="#EA4335" d="M10 3.96c1.47 0 2.79.5 3.82 1.5l2.87-2.87C14.95.99 12.7 0 10 0 6.09 0 2.72 2.24 1.06 5.51l3.35 2.59C5.2 5.73 7.4 3.96 10 3.96z"/></svg>',
   book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
   plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>',
   users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
@@ -366,6 +371,8 @@ function friendlyAuthError(e) {
   if (code.indexOf('invalid-email') !== -1) return 'That email address looks invalid.';
   if (code.indexOf('weak-password') !== -1) return 'Password must be at least 6 characters.';
   if (code.indexOf('too-many-requests') !== -1) return 'Too many attempts — please wait a moment and try again.';
+  if (code.indexOf('account-exists-with-different-credential') !== -1) return 'That email is already registered with a password — log in with your password instead.';
+  if (code.indexOf('popup-blocked') !== -1) return 'Your browser blocked the sign-in popup — allow popups for this site and try again.';
   return (e && e.message) || 'Something went wrong. Please try again.';
 }
 
@@ -397,6 +404,33 @@ async function doSignIn() {
   try {
     await auth.signInWithEmailAndPassword(email, pw);
   } catch (e) {
+    S.authError = friendlyAuthError(e);
+    S.authLoading = false;
+    render();
+  }
+}
+
+async function doGoogleSignIn() {
+  S.authError = ''; S.authLoading = true; render();
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const cred = await auth.signInWithPopup(provider);
+    const ref = db.collection('users').doc(cred.user.uid);
+    const snap = await ref.get();
+    if (!snap.exists) {
+      await ref.set({
+        name: cred.user.displayName || (cred.user.email ? cred.user.email.split('@')[0] : 'Member'),
+        email: cred.user.email || '',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+    // onAuthStateChanged picks up the rest and re-renders
+  } catch (e) {
+    if (e && e.code === 'auth/popup-closed-by-user') {
+      S.authLoading = false;
+      render();
+      return;
+    }
     S.authError = friendlyAuthError(e);
     S.authLoading = false;
     render();
@@ -488,6 +522,8 @@ function renderNameGate() {
     '<input class="input" type="password" autocomplete="' + (isSignUp ? 'new-password' : 'current-password') + '" placeholder="Password" value="' + esc(f.password) + '" oninput="S.authForm.password=this.value" onkeydown="if(event.key===\'Enter\')' + submitFn + '()" style="margin-top:10px" />' +
     (S.authError ? '<p class="auth-error">' + esc(S.authError) + '</p>' : '') +
     '<div style="margin-top:16px"><button class="btn btn-primary" style="width:100%;justify-content:center" onclick="' + submitFn + '()" ' + (S.authLoading ? 'disabled' : '') + '>' + ic('logIn', 16) + ' ' + (S.authLoading ? 'Please wait…' : (isSignUp ? 'Create account' : 'Log in')) + '</button></div>' +
+    '<div class="auth-divider"><span>or</span></div>' +
+    '<button type="button" class="btn btn-google" style="width:100%;justify-content:center" onclick="doGoogleSignIn()" ' + (S.authLoading ? 'disabled' : '') + '>' + ic('google', 18) + ' Continue with Google</button>' +
     '</div></div>';
 }
 
