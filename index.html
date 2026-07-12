@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Commons — learn it together</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  .app-root {
+    --ink: #1B2A3A;
+    --ink-soft: #2E4256;
+    --parchment: #EDE6D6;
+    --paper: #FAF7F0;
+    --brass: #B8863B;
+    --brass-dark: #96692A;
+    --moss: #4A6558;
+    --rust: #A6432D;
+    --line: #D9CFB8;
+    min-height: 100vh;
+    background: var(--parchment);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    background-image: radial-gradient(circle at 1px 1px, rgba(27,42,58,0.06) 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+  .display { font-family: 'Fraunces', serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  .header { display: flex; align-items: center; justify-content: space-between; padding: 20px 32px; border-bottom: 2px solid var(--ink); background: var(--paper); }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-title { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .brand-tag { font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 1px; }
+  .profile-pill { font-size: 12px; padding: 6px 12px; border-radius: 999px; background: var(--ink); color: var(--paper); font-family: 'JetBrains Mono', monospace; }
+
+  .container { max-width: 1040px; margin: 0 auto; padding: 28px 24px 64px; }
+
+  .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 24px; flex-wrap: wrap; }
+  .search-box { flex: 1; min-width: 220px; display: flex; align-items: center; gap: 8px; background: var(--paper); border: 1.5px solid var(--line); border-radius: 8px; padding: 10px 14px; }
+  .search-box input { border: none; outline: none; background: transparent; font-size: 14px; width: 100%; color: var(--ink); font-family: 'Inter', sans-serif; }
+
+  .btn { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14px; border-radius: 7px; padding: 10px 16px; cursor: pointer; border: 1.5px solid transparent; display: inline-flex; align-items: center; gap: 7px; transition: transform 0.08s ease, box-shadow 0.15s ease; }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--brass); color: var(--paper); }
+  .btn-primary:hover { background: var(--brass-dark); }
+  .btn-outline { background: transparent; border-color: var(--ink); color: var(--ink); }
+  .btn-outline:hover { background: var(--ink); color: var(--paper); }
+  .btn-ghost { background: transparent; color: var(--ink-soft); border: none; padding: 6px 10px; }
+  .btn-ghost:hover { color: var(--ink); }
+  .btn-sm { padding: 7px 12px; font-size: 13px; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .icon { display: inline-flex; }
+  .icon svg { width: 100%; height: 100%; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+
+  .index-card { background: var(--paper); border: 1.5px solid var(--ink); border-radius: 3px; position: relative; overflow: hidden; cursor: pointer; display: flex; flex-direction: column; box-shadow: 3px 3px 0 rgba(27,42,58,0.12); transition: transform 0.12s ease, box-shadow 0.12s ease; }
+  .index-card:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 rgba(27,42,58,0.16); }
+  .index-tab { height: 8px; }
+  .index-body { padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .index-subject { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+  .index-title { font-size: 19px; font-weight: 700; font-family: 'Fraunces', serif; line-height: 1.25; }
+  .index-desc { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; flex: 1; }
+  .index-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; padding-top: 12px; border-top: 1px dashed var(--line); font-size: 12px; color: var(--ink-soft); }
+  .index-members { display: flex; align-items: center; gap: 5px; }
+
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--ink-soft); }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(27,42,58,0.5); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 50; }
+  .modal { background: var(--paper); border-radius: 8px; max-width: 480px; width: 100%; max-height: 88vh; overflow-y: auto; border: 1.5px solid var(--ink); box-shadow: 6px 6px 0 rgba(27,42,58,0.18); }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--line); }
+  .modal-head h3 { font-family: 'Fraunces', serif; font-size: 20px; margin: 0; }
+  .modal-body { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 14px; }
+
+  label.field-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); display: block; margin-bottom: 6px; }
+  .input, .textarea { width: 100%; border: 1.5px solid var(--line); border-radius: 6px; padding: 10px 12px; font-family: 'Inter', sans-serif; font-size: 14px; color: var(--ink); background: #fff; outline: none; }
+  .input:focus, .textarea:focus { border-color: var(--brass); }
+  .textarea { resize: vertical; min-height: 70px; }
+  .radio-row { display: flex; gap: 14px; font-size: 13px; }
+  .radio-row label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+  .hint { font-size: 11.5px; color: var(--ink-soft); font-style: italic; margin: 0; }
+
+  .classroom-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 6px; flex-wrap: wrap; }
+  .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-soft); cursor: pointer; margin-bottom: 14px; font-weight: 600; }
+  .back-link:hover { color: var(--ink); }
+  .classroom-title { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 700; line-height: 1.15; }
+  .classroom-meta { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-top: 8px; font-size: 13px; color: var(--ink-soft); }
+  .classroom-desc { margin-top: 10px; font-size: 14.5px; color: var(--ink-soft); max-width: 640px; line-height: 1.55; }
+
+  .tabs { display: flex; gap: 4px; margin: 22px 0 0; border-bottom: 2px solid var(--ink); }
+  .tab-btn { padding: 10px 18px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; position: relative; top: 2px; }
+  .tab-btn.active { color: var(--ink); border-bottom: 2px solid var(--brass); }
+
+  .ruled-paper { background: repeating-linear-gradient(var(--paper), var(--paper) 30px, var(--line) 31px); border: 1.5px solid var(--ink); border-left: none; border-radius: 0 4px 4px 0; padding: 24px 24px 24px 44px; margin-top: 18px; position: relative; }
+  .ruled-paper::before { content: ''; position: absolute; left: 26px; top: 0; bottom: 0; width: 1.5px; background: var(--rust); opacity: 0.55; }
+
+  .post-form { display: flex; gap: 10px; margin-bottom: 20px; }
+  .post-form textarea { flex: 1; min-height: 44px; }
+
+  .post { background: rgba(255,255,255,0.55); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; margin-bottom: 14px; }
+  .post-author { font-weight: 700; font-size: 13.5px; }
+  .post-time { font-size: 11.5px; color: var(--ink-soft); font-family: 'JetBrains Mono', monospace; margin-left: 8px; }
+  .post-text { margin-top: 6px; font-size: 14.5px; line-height: 1.55; white-space: pre-wrap; }
+  .post-actions { margin-top: 10px; display: flex; align-items: center; gap: 14px; }
+  .reply-toggle { font-size: 12.5px; color: var(--moss); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+
+  .replies { margin-top: 12px; padding-left: 18px; border-left: 2px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+  .reply { font-size: 13.5px; }
+  .reply-author { font-weight: 700; }
+  .reply-text { margin-top: 2px; line-height: 1.5; white-space: pre-wrap; }
+  .reply-form { display: flex; gap: 8px; margin-top: 10px; }
+  .reply-form input { flex: 1; }
+
+  .resource-list { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+  .resource-item { display: flex; align-items: center; gap: 12px; background: var(--paper); border: 1.5px solid var(--line); border-radius: 6px; padding: 14px 16px; cursor: pointer; }
+  .resource-item:hover { border-color: var(--brass); }
+  .resource-icon { width: 34px; height: 34px; border-radius: 6px; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .resource-title { font-weight: 600; font-size: 14.5px; }
+  .resource-sub { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+
+  .name-gate { position: fixed; inset: 0; background: var(--ink); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 60; }
+  .name-card { background: var(--paper); border-radius: 10px; padding: 36px 34px; max-width: 400px; width: 100%; text-align: center; box-shadow: 8px 8px 0 rgba(0,0,0,0.25); }
+  .name-card h2 { font-family: 'Fraunces', serif; font-size: 26px; margin: 14px 0 6px; }
+  .name-card p { color: var(--ink-soft); font-size: 14px; margin-bottom: 20px; }
+
+  .notice-bar { background: var(--rust); color: var(--paper); font-size: 13px; padding: 8px 16px; text-align: center; }
+
+  .reading-modal .modal { max-width: 620px; }
+  .reading-text { white-space: pre-wrap; line-height: 1.75; font-size: 15px; color: var(--ink); }
+  .reading-link { word-break: break-all; color: var(--moss); font-weight: 600; }
+
+  @media (max-width: 640px) {
+    .header { padding: 16px 18px; }
+    .container { padding: 20px 14px 48px; }
+    .classroom-title { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+/* ---------- icons ---------- */
+const ICONS = {
+  book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+  plus: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>',
+  users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  message: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-3.8 7.6L21 21l-1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 1 1 3.6 0z"/></svg>',
+  send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  library: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>',
+  arrowLeft: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>',
+  link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+  fileText: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8M16 17H8M10 9H8"/></svg>',
+  logIn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>',
+  chevronDown: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>',
+  chevronUp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>',
+  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>',
+  cap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.1 2.7 2 6 2s6-.9 6-2v-5"/></svg>'
+};
+function ic(name, size, color) {
+  size = size || 16;
+  return '<span class="icon" style="width:' + size + 'px;height:' + size + 'px;color:' + (color || 'currentColor') + '">' + ICONS[name] + '</span>';
+}
+
+/* ---------- storage (works inside Claude artifacts via window.storage, falls back to localStorage when run as a plain file) ---------- */
+const hasCloudStorage = typeof window.storage !== 'undefined';
+async function sGet(key, shared) {
+  try {
+    if (hasCloudStorage) {
+      const r = await window.storage.get(key, shared);
+      return r ? r.value : null;
+    }
+    return localStorage.getItem((shared ? 'shared:' : 'p:') + key);
+  } catch (e) { return null; }
+}
+async function sSet(key, shared, value) {
+  try {
+    if (hasCloudStorage) {
+      const r = await window.storage.set(key, value, shared);
+      return !!r;
+    }
+    localStorage.setItem((shared ? 'shared:' : 'p:') + key, value);
+    return true;
+  } catch (e) { return false; }
+}
+
+/* ---------- helpers ---------- */
+function uid() { return Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4); }
+function esc(s) {
+  return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function timeAgo(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return 'just now';
+  if (s < 3600) return Math.floor(s / 60) + 'm ago';
+  if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+  return Math.floor(s / 86400) + 'd ago';
+}
+const TAB_COLORS = ['#B8863B', '#4A6558', '#A6432D', '#2E4256'];
+function tabColor(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = s.charCodeAt(i) + ((h << 5) - h);
+  return TAB_COLORS[Math.abs(h) % TAB_COLORS.length];
+}
+
+function seedCourses() {
+  const now = Date.now();
+  return [
+    {
+      id: uid(), title: 'The Silk Road & World Trade', subject: 'History',
+      description: 'Tracing how goods, ideas, and religions moved between China, Central Asia, the Middle East, and Europe from 200 BCE onward.',
+      creator: 'Amara', members: ['Amara', 'Devon', 'Priya'], createdAt: now - 8 * 86400000,
+      resources: [{ id: uid(), title: 'Reading One: Why the Road Was Never One Road', type: 'text',
+        content: 'The phrase "Silk Road" suggests a single highway, but it was really a shifting mesh of routes — some overland through oases like Samarkand and Dunhuang, others by sea from the Malabar Coast to the Persian Gulf. Silk mattered, but so did paper, glass, spices, horses, and Buddhist and later Islamic texts. Merchants rarely traveled the whole distance themselves; instead, goods passed through many hands, each leg adding cost and story. Discuss: what does it change if we think of this as a network of relay points rather than a road?' }],
+      posts: [{ id: uid(), author: 'Devon', text: 'Why did Buddhism spread so successfully along these routes compared to other belief systems of the era?', createdAt: now - 3 * 86400000,
+        replies: [
+          { id: uid(), author: 'Priya', text: "I think it helped that monasteries doubled as rest stops for traders — practical hospitality plus teaching.", createdAt: now - 2 * 86400000 },
+          { id: uid(), author: 'Amara', text: "Also Buddhism didn't require abandoning local gods the way some traditions did, so it layered onto existing beliefs more easily.", createdAt: now - 86400000 }
+        ] }]
+    },
+    {
+      id: uid(), title: 'Intro to Probability, Together', subject: 'Mathematics',
+      description: "A slow, discussion-based walk through probability basics — dice, cards, and everyday decisions, no textbook pace-anxiety.",
+      creator: 'Priya', members: ['Priya', 'Marcus'], createdAt: now - 4 * 86400000,
+      resources: [{ id: uid(), title: 'Notes: Independent vs Dependent Events', type: 'text',
+        content: "Two events are independent if one happening tells you nothing about whether the other happens — like two separate coin flips. They're dependent when the outcome of one changes the odds of the other, like drawing two cards from a deck without replacement. A common mix-up: people often treat dependent events as independent when the dependence is small, and independent events as dependent when they notice a coincidence. Try it: what's the chance of drawing two aces in a row from a full deck, with and without putting the first card back?" }],
+      posts: []
+    }
+  ];
+}
+
+/* ---------- state ---------- */
+const S = {
+  profileName: '', nameInput: '', showNameGate: true,
+  courses: [], loaded: false,
+  view: 'home', activeCourseId: null, activeTab: 'discussion',
+  showCreate: false,
+  createForm: { title: '', subject: '', description: '', resourceTitle: '', resourceType: 'text', resourceContent: '' },
+  postText: '', replyDrafts: {}, expandedPosts: {},
+  readingResourceId: null,
+  search: '', notice: '',
+  resourceForm: { title: '', type: 'text', content: '' }, showAddResource: false
+};
+
+/* ---------- persistence actions ---------- */
+async function init() {
+  const name = await sGet('profile-name', false);
+  if (name) { S.profileName = name; S.showNameGate = false; }
+  const coursesRaw = await sGet('courses-data', true);
+  if (coursesRaw) {
+    try { S.courses = JSON.parse(coursesRaw); } catch (e) { S.courses = seedCourses(); }
+  } else {
+    S.courses = seedCourses();
+    await sSet('courses-data', true, JSON.stringify(S.courses));
+  }
+  S.loaded = true;
+  render();
+}
+
+async function persist() {
+  render();
+  const ok = await sSet('courses-data', true, JSON.stringify(S.courses));
+  if (!ok) { S.notice = "Couldn't save that change — it may not stick around."; render(); }
+}
+
+async function saveName() {
+  const n = S.nameInput.trim();
+  if (!n) return;
+  S.profileName = n;
+  S.showNameGate = false;
+  render();
+  await sSet('profile-name', false, n);
+}
+
+function openCourse(id) { S.activeCourseId = id; S.view = 'classroom'; S.activeTab = 'discussion'; S.showAddResource = false; render(); }
+function backHome() { S.view = 'home'; S.activeCourseId = null; render(); }
+function setTab(t) { S.activeTab = t; render(); }
+
+function createCourse() {
+  const f = S.createForm;
+  if (!f.title.trim()) return;
+  const course = {
+    id: uid(), title: f.title.trim(), subject: f.subject.trim() || 'General', description: f.description.trim(),
+    creator: S.profileName, members: [S.profileName], createdAt: Date.now(),
+    resources: f.resourceTitle.trim() ? [{ id: uid(), title: f.resourceTitle.trim(), type: f.resourceType, content: f.resourceContent.trim() }] : [],
+    posts: []
+  };
+  S.courses = [course, ...S.courses];
+  S.createForm = { title: '', subject: '', description: '', resourceTitle: '', resourceType: 'text', resourceContent: '' };
+  S.showCreate = false;
+  persist();
+  openCourse(course.id);
+}
+
+function joinCourse(id) {
+  S.courses = S.courses.map(c => c.id === id && !c.members.includes(S.profileName) ? Object.assign({}, c, { members: c.members.concat([S.profileName]) }) : c);
+  persist();
+}
+
+function addPost() {
+  const text = S.postText.trim();
+  if (!text || !S.activeCourseId) return;
+  S.courses = S.courses.map(c => {
+    if (c.id !== S.activeCourseId) return c;
+    const post = { id: uid(), author: S.profileName, text: text, createdAt: Date.now(), replies: [] };
+    return Object.assign({}, c, { posts: [post].concat(c.posts) });
+  });
+  S.postText = '';
+  persist();
+}
+
+function addReply(postId) {
+  const text = (S.replyDrafts[postId] || '').trim();
+  if (!text) return;
+  S.courses = S.courses.map(c => {
+    if (c.id !== S.activeCourseId) return c;
+    return Object.assign({}, c, { posts: c.posts.map(p => p.id === postId ? Object.assign({}, p, { replies: p.replies.concat([{ id: uid(), author: S.profileName, text: text, createdAt: Date.now() }]) }) : p) });
+  });
+  S.replyDrafts[postId] = '';
+  persist();
+}
+
+function addResource() {
+  const f = S.resourceForm;
+  if (!f.title.trim() || !f.content.trim()) return;
+  S.courses = S.courses.map(c => {
+    if (c.id !== S.activeCourseId) return c;
+    return Object.assign({}, c, { resources: c.resources.concat([{ id: uid(), title: f.title.trim(), type: f.type, content: f.content.trim() }]) });
+  });
+  S.resourceForm = { title: '', type: 'text', content: '' };
+  S.showAddResource = false;
+  persist();
+}
+
+/* ---------- render helpers (each returns HTML string) ---------- */
+function renderNameGate() {
+  if (!S.showNameGate) return '';
+  return '<div class="name-gate"><div class="name-card">' +
+    ic('cap', 36, 'var(--brass)') +
+    '<h2>Welcome to The Commons</h2>' +
+    '<p>A shared classroom where anyone can start or join a course and learn together. What should we call you?</p>' +
+    '<input class="input" id="nameInput" placeholder="Your name" value="' + esc(S.nameInput) + '" oninput="S.nameInput=this.value" onkeydown="if(event.key===\'Enter\')saveName()" />' +
+    '<div style="margin-top:16px"><button class="btn btn-primary" style="width:100%;justify-content:center" onclick="saveName()" ' + (S.nameInput.trim() ? '' : 'disabled') + '>' + ic('logIn', 16) + ' Enter the Commons</button></div>' +
+    '</div></div>';
+}
+
+function renderHeader() {
+  return '<div class="header"><div class="brand">' + ic('book', 26, 'var(--brass)') +
+    '<div><div class="brand-title display">The Commons</div><div class="brand-tag">learn it together</div></div></div>' +
+    (S.profileName ? '<div class="profile-pill">' + esc(S.profileName) + '</div>' : '') + '</div>';
+}
+
+function courseCard(c) {
+  const joined = c.members.includes(S.profileName);
+  return '<div class="index-card" onclick="openCourse(\'' + c.id + '\')">' +
+    '<div class="index-tab" style="background:' + tabColor(c.subject) + '"></div>' +
+    '<div class="index-body">' +
+    '<div class="index-subject" style="color:' + tabColor(c.subject) + '">' + esc(c.subject) + '</div>' +
+    '<div class="index-title">' + esc(c.title) + '</div>' +
+    '<div class="index-desc">' + esc(c.description || 'No description yet.') + '</div>' +
+    '<div class="index-foot"><div class="index-members">' + ic('users', 13) + ' ' + c.members.length + ' learning</div>' +
+    (joined ? '<span class="mono" style="color:var(--moss);font-weight:600">joined ✓</span>' :
+      '<button class="btn btn-outline btn-sm" onclick="event.stopPropagation();joinCourse(\'' + c.id + '\')">Join</button>') +
+    '</div></div></div>';
+}
+
+function renderHome() {
+  const q = S.search.trim().toLowerCase();
+  const filtered = S.courses.filter(c => !q || c.title.toLowerCase().includes(q) || c.subject.toLowerCase().includes(q) || c.description.toLowerCase().includes(q));
+  let html = '<div class="toolbar"><div class="search-box">' + ic('search', 16, 'var(--ink-soft)') +
+    '<input id="searchInput" placeholder="Search courses by title, subject, or topic…" value="' + esc(S.search) + '" oninput="onSearchInput(this.value)" /></div>' +
+    '<button class="btn btn-primary" onclick="S.showCreate=true;render()">' + ic('plus', 16) + ' Start a course</button></div>';
+  if (!S.loaded) { html += '<div class="empty-state">Opening the reading room…</div>'; return html; }
+  if (filtered.length === 0) {
+    html += '<div class="empty-state">' + ic('book', 30, 'var(--ink-soft)') + '<p style="margin-top:10px">No courses match yet. Start one — someone will join.</p></div>';
+  }
+  html += '<div class="grid" id="courseGrid">' + filtered.map(courseCard).join('') + '</div>';
+  return html;
+}
+
+function onSearchInput(v) {
+  S.search = v;
+  const grid = document.getElementById('courseGrid');
+  const q = v.trim().toLowerCase();
+  const filtered = S.courses.filter(c => !q || c.title.toLowerCase().includes(q) || c.subject.toLowerCase().includes(q) || c.description.toLowerCase().includes(q));
+  if (grid) {
+    grid.innerHTML = filtered.map(courseCard).join('');
+  } else {
+    render();
+  }
+}
+
+function renderClassroom() {
+  const c = S.courses.find(x => x.id === S.activeCourseId);
+  if (!c) { S.view = 'home'; return renderHome(); }
+  let html = '<div class="back-link" onclick="backHome()">' + ic('arrowLeft', 15) + ' All courses</div>';
+  html += '<div class="classroom-head"><div>' +
+    '<div class="index-subject" style="color:' + tabColor(c.subject) + '">' + esc(c.subject) + '</div>' +
+    '<div class="classroom-title">' + esc(c.title) + '</div>' +
+    '<div class="classroom-desc">' + esc(c.description) + '</div>' +
+    '<div class="classroom-meta"><span>' + ic('users', 13) + ' ' + esc(c.members.join(', ')) + '</span>' +
+    '<span class="mono">started by ' + esc(c.creator) + '</span></div></div>';
+  if (!c.members.includes(S.profileName)) {
+    html += '<button class="btn btn-primary" onclick="joinCourse(\'' + c.id + '\')">' + ic('logIn', 16) + ' Join this course</button>';
+  }
+  html += '</div>';
+
+  html += '<div class="tabs">' +
+    '<button class="tab-btn ' + (S.activeTab === 'discussion' ? 'active' : '') + '" onclick="setTab(\'discussion\')">' + ic('message', 15) + ' Discussion</button>' +
+    '<button class="tab-btn ' + (S.activeTab === 'library' ? 'active' : '') + '" onclick="setTab(\'library\')">' + ic('library', 15) + ' Library</button>' +
+    '</div>';
+
+  if (S.activeTab === 'discussion') html += renderDiscussion(c);
+  else html += renderLibrary(c);
+
+  return html;
+}
+
+function renderDiscussion(c) {
+  let html = '<div class="ruled-paper"><div class="post-form">' +
+    '<textarea class="input textarea" id="postInput" placeholder="Ask a question or start a discussion for the class…" oninput="S.postText=this.value">' + esc(S.postText) + '</textarea>' +
+    '<button class="btn btn-primary" style="height:44px;align-self:flex-start" onclick="addPost()" ' + (S.postText.trim() ? '' : 'disabled') + '>' + ic('send', 15) + '</button></div>';
+
+  if (c.posts.length === 0) html += '<div class="empty-state" style="padding:30px 10px">No discussion yet — ask the first question.</div>';
+
+  c.posts.forEach(p => {
+    const isOpen = !!S.expandedPosts[p.id];
+    html += '<div class="post"><span class="post-author">' + esc(p.author) + '</span><span class="post-time">' + timeAgo(p.createdAt) + '</span>' +
+      '<div class="post-text">' + esc(p.text) + '</div>' +
+      '<div class="post-actions"><span class="reply-toggle" onclick="togglePost(\'' + p.id + '\')">' + ic(isOpen ? 'chevronUp' : 'chevronDown', 14) + ' ' + p.replies.length + ' ' + (p.replies.length === 1 ? 'reply' : 'replies') + '</span></div>';
+    if (isOpen) {
+      if (p.replies.length > 0) {
+        html += '<div class="replies">' + p.replies.map(r =>
+          '<div class="reply"><span class="reply-author">' + esc(r.author) + '</span><span class="post-time">' + timeAgo(r.createdAt) + '</span><div class="reply-text">' + esc(r.text) + '</div></div>'
+        ).join('') + '</div>';
+      }
+      html += '<div class="reply-form"><input class="input" placeholder="Write a reply…" value="' + esc(S.replyDrafts[p.id] || '') + '" oninput="S.replyDrafts[\'' + p.id + '\']=this.value" onkeydown="if(event.key===\'Enter\')addReply(\'' + p.id + '\')" />' +
+        '<button class="btn btn-outline btn-sm" onclick="addReply(\'' + p.id + '\')" ' + ((S.replyDrafts[p.id] || '').trim() ? '' : 'disabled') + '>Reply</button></div>';
+    }
+    html += '</div>';
+  });
+
+  html += '</div>';
+  return html;
+}
+
+function togglePost(id) { S.expandedPosts[id] = !S.expandedPosts[id]; render(); }
+
+function renderLibrary(c) {
+  let html = '<div><div class="resource-list">';
+  if (c.resources.length === 0) html += '<div class="empty-state" style="padding:30px 10px">No readings added yet.</div>';
+  c.resources.forEach(r => {
+    html += '<div class="resource-item" onclick="openReading(\'' + r.id + '\')"><div class="resource-icon">' + ic(r.type === 'link' ? 'link' : 'fileText', 16) + '</div>' +
+      '<div><div class="resource-title">' + esc(r.title) + '</div><div class="resource-sub">' + (r.type === 'link' ? 'External link' : 'Reading') + '</div></div></div>';
+  });
+  html += '</div>';
+
+  if (!S.showAddResource) {
+    html += '<button class="btn btn-outline btn-sm" style="margin-top:16px" onclick="S.showAddResource=true;render()">' + ic('plus', 14) + ' Add a reading or link</button>';
+  } else {
+    const f = S.resourceForm;
+    html += '<div class="modal" style="margin-top:16px;box-shadow:none;max-width:none"><div class="modal-body">' +
+      '<div><label class="field-label">Title</label><input class="input" value="' + esc(f.title) + '" oninput="S.resourceForm.title=this.value" placeholder="e.g. Chapter 3 notes, or a source link" /></div>' +
+      '<div class="radio-row"><label><input type="radio" name="restype" ' + (f.type === 'text' ? 'checked' : '') + ' onchange="S.resourceForm.type=\'text\';render()" /> Pasted text</label>' +
+      '<label><input type="radio" name="restype" ' + (f.type === 'link' ? 'checked' : '') + ' onchange="S.resourceForm.type=\'link\';render()" /> Link</label></div>' +
+      (f.type === 'text'
+        ? '<textarea class="input textarea" placeholder="Paste the reading here…" oninput="S.resourceForm.content=this.value">' + esc(f.content) + '</textarea>'
+        : '<input class="input" placeholder="https://…" value="' + esc(f.content) + '" oninput="S.resourceForm.content=this.value" />') +
+      '<div style="display:flex;gap:10px"><button class="btn btn-primary btn-sm" onclick="addResource()">Add to library</button>' +
+      '<button class="btn btn-ghost btn-sm" onclick="S.showAddResource=false;render()">Cancel</button></div>' +
+      '</div></div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function openReading(id) { S.readingResourceId = id; render(); }
+function closeReading() { S.readingResourceId = null; render(); }
+
+function renderReadingModal() {
+  if (!S.readingResourceId) return '';
+  let resource = null;
+  S.courses.some(c => { const r = c.resources.find(x => x.id === S.readingResourceId); if (r) { resource = r; return true; } return false; });
+  if (!resource) return '';
+  const body = resource.type === 'link'
+    ? '<a class="reading-link" href="' + esc(resource.content) + '" target="_blank" rel="noopener noreferrer">' + esc(resource.content) + '</a>'
+    : '<div class="reading-text">' + esc(resource.content) + '</div>';
+  return '<div class="modal-overlay reading-modal" onclick="closeReading()"><div class="modal" onclick="event.stopPropagation()">' +
+    '<div class="modal-head"><h3>' + esc(resource.title) + '</h3><button class="btn-ghost" onclick="closeReading()">' + ic('x', 18) + '</button></div>' +
+    '<div class="modal-body">' + body + '</div></div></div>';
+}
+
+function renderCreateModal() {
+  if (!S.showCreate) return '';
+  const f = S.createForm;
+  let html = '<div class="modal-overlay" onclick="S.showCreate=false;render()"><div class="modal" onclick="event.stopPropagation()">' +
+    '<div class="modal-head"><h3>Start a course</h3><button class="btn-ghost" onclick="S.showCreate=false;render()">' + ic('x', 18) + '</button></div>' +
+    '<div class="modal-body">' +
+    '<div><label class="field-label">Course title</label><input class="input" id="courseTitleInput" placeholder="e.g. The Fall of Rome" value="' + esc(f.title) + '" oninput="S.createForm.title=this.value;syncCreateBtn()" /></div>' +
+    '<div><label class="field-label">Subject</label><input class="input" placeholder="History, Math, Literature…" value="' + esc(f.subject) + '" oninput="S.createForm.subject=this.value" /></div>' +
+    '<div><label class="field-label">What will people learn?</label><textarea class="input textarea" placeholder="A short description for the course card" oninput="S.createForm.description=this.value">' + esc(f.description) + '</textarea></div>' +
+    '<div><label class="field-label">First reading (optional)</label>' +
+    '<input class="input" placeholder="Title, e.g. \'Week 1 overview\'" value="' + esc(f.resourceTitle) + '" oninput="S.createForm.resourceTitle=this.value;render()" style="margin-bottom:10px" />';
+  if (f.resourceTitle.trim()) {
+    html += '<div class="radio-row" style="margin-bottom:8px"><label><input type="radio" name="cresType" ' + (f.resourceType === 'text' ? 'checked' : '') + ' onchange="S.createForm.resourceType=\'text\';render()" /> Pasted text</label>' +
+      '<label><input type="radio" name="cresType" ' + (f.resourceType === 'link' ? 'checked' : '') + ' onchange="S.createForm.resourceType=\'link\';render()" /> Link</label></div>';
+    html += f.resourceType === 'text'
+      ? '<textarea class="input textarea" placeholder="Paste reading text…" oninput="S.createForm.resourceContent=this.value">' + esc(f.resourceContent) + '</textarea>'
+      : '<input class="input" placeholder="https://…" value="' + esc(f.resourceContent) + '" oninput="S.createForm.resourceContent=this.value" />';
+  }
+  html += '</div>' +
+    '<p class="hint">This course will be visible to everyone in the Commons.</p>' +
+    '<button class="btn btn-primary" id="createCourseBtn" style="justify-content:center" onclick="createCourse()" ' + (f.title.trim() ? '' : 'disabled') + '>' + ic('plus', 16) + ' Create course</button>' +
+    '</div></div></div>';
+  return html;
+}
+function syncCreateBtn() {
+  const btn = document.getElementById('createCourseBtn');
+  if (btn) btn.disabled = !S.createForm.title.trim();
+}
+
+/* ---------- root render with focus preservation ---------- */
+function render() {
+  const root = document.getElementById('root');
+  const active = document.activeElement;
+  const activeId = active && active.id ? active.id : null;
+  const selStart = active && 'selectionStart' in active ? active.selectionStart : null;
+  const selEnd = active && 'selectionEnd' in active ? active.selectionEnd : null;
+
+  let html = '<div class="app-root">';
+  html += renderNameGate();
+  if (S.notice) html += '<div class="notice-bar">' + esc(S.notice) + '</div>';
+  html += renderHeader();
+  html += '<div class="container">' + (S.view === 'home' ? renderHome() : renderClassroom()) + '</div>';
+  html += renderCreateModal();
+  html += renderReadingModal();
+  html += '</div>';
+
+  root.innerHTML = html;
+
+  if (activeId) {
+    const el = document.getElementById(activeId);
+    if (el) {
+      el.focus();
+      if (selStart != null && el.setSelectionRange) {
+        try { el.setSelectionRange(selStart, selEnd); } catch (e) {}
+      }
+    }
+  }
+}
+
+init();
+</script>
+</body>
+</html>
